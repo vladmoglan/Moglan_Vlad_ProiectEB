@@ -97,12 +97,32 @@ namespace Moglan_Vlad_ProiectEB.Controllers
                 return NotFound();
             }
 
-            var location = await _context.Locations.FindAsync(id);
+            var location = await _context.Locations
+                .Include(i => i.ProvidedService).ThenInclude(i => i.Service)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ID == id);
             if (location == null)
             {
                 return NotFound();
             }
+            PopulateProvidedServiceData(location);
             return View(location);
+        }
+        private void PopulateProvidedServiceData(Location location)
+        {
+            var allServices = _context.Services;
+            var locationServices = new HashSet<int>(location.ProvidedService.Select(c => c.ServiceID));
+            var viewModel = new List<ProvidedServiceData>();
+            foreach (var service in allServices)
+            {
+                viewModel.Add(new ProvidedServiceData
+                {
+                    ServiceID = service.ID,
+                    Title = service.Title,
+                    IsProvided = locationServices.Contains(service.ID)
+                });
+            }
+            ViewData["Services"] = viewModel;
         }
 
         // POST: Locations/Edit/5
@@ -110,34 +130,66 @@ namespace Moglan_Vlad_ProiectEB.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,LocationName,Adress")] Location location)
+        public async Task<IActionResult> Edit(int? id, string[] selectedServices)
         {
-            if (id != location.ID)
+            if (id == null)
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            var locationToUpdate = await _context.Locations
+            .Include(i => i.ProvidedService)
+            .ThenInclude(i => i.Service)
+            .FirstOrDefaultAsync(m => m.ID == id);
+            if (await TryUpdateModelAsync<Location>(locationToUpdate, "", i => i.LocationName, i => i.Adress))
             {
+                UpdateProvidedService(selectedServices, locationToUpdate);
                 try
                 {
-                    _context.Update(location);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateException /* ex */)
                 {
-                    if (!LocationExists(location.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists, ");
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(location);
+            UpdateProvidedService(selectedServices, locationToUpdate);
+            PopulateProvidedServiceData(locationToUpdate);
+            return View(locationToUpdate);
+        }
+        private void UpdateProvidedService(string[] selectedServices, Location locationToUpdate)
+        {
+            if (selectedServices == null)
+            {
+                locationToUpdate.ProvidedService = new List<ProvidedService>();
+                return;
+            }
+            var selectedServicesHS = new HashSet<string>(selectedServices);
+            var providedServices = new HashSet<int>
+            (locationToUpdate.ProvidedService.Select(c => c.Service.ID));
+            foreach (var service in _context.Services)
+            {
+                if (selectedServicesHS.Contains(service.ID.ToString()))
+                {
+                    if (!providedServices.Contains(service.ID))
+                    {
+                        locationToUpdate.ProvidedService.Add(new ProvidedService
+                        {
+                            LocationID = locationToUpdate.ID,
+                            ServiceID = service.ID
+                        });
+                    }
+                }
+                else
+                {
+                    if (providedServices.Contains(service.ID))
+                    {
+                        ProvidedService serviceToRemove = locationToUpdate.ProvidedService.FirstOrDefault(i => i.ServiceID == service.ID);
+                        _context.Remove(serviceToRemove);
+                    }
+                }
+            }
         }
 
         // GET: Locations/Delete/5

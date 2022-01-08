@@ -49,3 +49,58 @@
         }
     </tbody>
 </table>
+
+@if (Model.Services != null)
+{
+    <h3>Available Services in Selected Location</h3>
+    <table class="table">
+        <tr>
+            <th></th>
+            <th>Title</th>
+            <th>Price</th>
+        </tr>
+        @foreach (var item in Model.Services)
+        {
+            string selectedRow = "";
+            if (item.ID == (int?)ViewData["ServiceID"])
+            {
+                selectedRow = "success";
+            }
+            <tr class="@selectedRow">
+                <td>
+                    @Html.ActionLink("Select", "Index", new { serviceID = item.ID })
+                </td>
+                <td>
+                    @item.Title
+                </td>
+                <td>
+                    @item.Price
+                </td>
+            </tr>
+        }
+    </table>
+}
+
+@if (Model.Appointments != null)
+{
+    <h3>
+        Clients that have selected the Specified Service
+    </h3>
+    <table class="table">
+        <tr>
+            <th>Name</th>
+            <th>Appointment Date</th>
+        </tr>
+        @foreach (var item in Model.Appointments)
+        {
+            <tr>
+                <td>
+                    @item.Client.Name
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AppointmentDate)
+                </td>
+            </tr>
+        }
+    </table>
+}
