@@ -1,0 +1,26 @@
+﻿@model IEnumerable<Moglan_Vlad_ProiectEB.Models.CarServiceViewModels.AppointmentGroup>
+@{
+    ViewData["Title"] = "Appointments Statistics";
+}
+<h2>Appointments Statistics</h2>
+<table>
+    <tr>
+        <th>
+            Appointment Date
+        </th>
+        <th>
+            Requested Services
+        </th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppointmentDate)
+            </td>
+            <td>
+                @item.ServiceCount
+            </td>
+        </tr>
+    }
+</table>
