@@ -30,5 +30,7 @@ namespace Moglan_Vlad_ProiectEB.Data
             modelBuilder.Entity<ProvidedService>().HasKey(c => new { c.ServiceID, c.LocationID });//configureaza cheia primara compusa
 
         }
+
+        public DbSet<Moglan_Vlad_ProiectEB.Models.Employee> Employee { get; set; }
     }
 }

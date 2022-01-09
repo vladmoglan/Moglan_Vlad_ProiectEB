@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Moglan_Vlad_ProiectEB.Data;
 using Microsoft.EntityFrameworkCore;
 using Moglan_Vlad_ProiectEB.Hubs;
+using Microsoft.AspNetCore.Identity;
 
 namespace Moglan_Vlad_ProiectEB
 {
@@ -29,6 +30,20 @@ namespace Moglan_Vlad_ProiectEB
             services.AddControllersWithViews();
             services.AddDbContext<CarServiceContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddSignalR();
+            services.AddRazorPages();
+
+            services.Configure<IdentityOptions>(options => {
+
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 3;
+                options.Lockout.AllowedForNewUsers = true;
+            });
+
+            services.AddAuthorization(opts => {
+                opts.AddPolicy("OnlySales", policy => {
+                    policy.RequireClaim("Department", "Sales");
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,9 +61,12 @@ namespace Moglan_Vlad_ProiectEB
             }
 
             app.UseHttpsRedirection();
+
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
@@ -58,6 +76,8 @@ namespace Moglan_Vlad_ProiectEB
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapHub<ChatHub>("/chathub");
+                endpoints.MapRazorPages();
+
             });
 
         }

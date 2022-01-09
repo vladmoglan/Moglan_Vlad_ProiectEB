@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,8 @@ using Moglan_Vlad_ProiectEB.Models.CarServiceViewModels;
 
 namespace Moglan_Vlad_ProiectEB.Controllers
 {
+    [Authorize(Policy = "OnlySales")]
+
     public class LocationsController : Controller
     {
         private readonly CarServiceContext _context;

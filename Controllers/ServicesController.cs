@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Moglan_Vlad_ProiectEB.Data;
 using Moglan_Vlad_ProiectEB.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Moglan_Vlad_ProiectEB.Controllers
 {
+    [Authorize(Roles = "Employee")]
     public class ServicesController : Controller
     {
         private readonly CarServiceContext _context;
@@ -20,6 +22,7 @@ namespace Moglan_Vlad_ProiectEB.Controllers
         }
 
         // GET: Services
+        [AllowAnonymous]
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
@@ -62,6 +65,7 @@ namespace Moglan_Vlad_ProiectEB.Controllers
         }
 
         // GET: Services/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
