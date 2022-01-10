@@ -87,6 +87,7 @@ namespace Moglan_Vlad_ProiectEB.Controllers
         }
 
         // GET: Services/Create
+        [Authorize(Policy = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -117,6 +118,7 @@ namespace Moglan_Vlad_ProiectEB.Controllers
         }
 
         // GET: Services/Edit/5
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -164,6 +166,7 @@ namespace Moglan_Vlad_ProiectEB.Controllers
         }
 
         // GET: Services/Delete/5
+        // [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
             if (id == null)

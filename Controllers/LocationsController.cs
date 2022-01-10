@@ -12,7 +12,6 @@ using Moglan_Vlad_ProiectEB.Models.CarServiceViewModels;
 
 namespace Moglan_Vlad_ProiectEB.Controllers
 {
-    [Authorize(Policy = "Admin")]
 
     public class LocationsController : Controller
     {
@@ -71,6 +70,8 @@ namespace Moglan_Vlad_ProiectEB.Controllers
         }
 
         // GET: Locations/Create
+
+        [Authorize(Policy = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -93,6 +94,7 @@ namespace Moglan_Vlad_ProiectEB.Controllers
         }
 
         // GET: Locations/Edit/5
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -196,6 +198,7 @@ namespace Moglan_Vlad_ProiectEB.Controllers
         }
 
         // GET: Locations/Delete/5
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
