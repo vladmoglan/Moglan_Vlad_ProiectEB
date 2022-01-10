@@ -40,9 +40,16 @@ namespace Moglan_Vlad_ProiectEB
             });
 
             services.AddAuthorization(opts => {
-                opts.AddPolicy("OnlySales", policy => {
-                    policy.RequireClaim("Department", "Sales");
+                opts.AddPolicy("Admin", policy => {
+                    policy.RequireClaim("Department", "Administrator");
                 });
+            });
+
+            
+            services.ConfigureApplicationCookie(opts =>
+            {
+                opts.AccessDeniedPath = "/Identity/Account/AccessDenied";
+
             });
         }
 

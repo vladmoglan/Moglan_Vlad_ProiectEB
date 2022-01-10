@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Moglan_Vlad_ProiectEB.Controllers
 {
-    [Authorize(Roles = "Employee")]
     public class ServicesController : Controller
     {
         private readonly CarServiceContext _context;

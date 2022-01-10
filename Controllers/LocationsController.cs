@@ -12,7 +12,7 @@ using Moglan_Vlad_ProiectEB.Models.CarServiceViewModels;
 
 namespace Moglan_Vlad_ProiectEB.Controllers
 {
-    [Authorize(Policy = "OnlySales")]
+    [Authorize(Policy = "Admin")]
 
     public class LocationsController : Controller
     {
