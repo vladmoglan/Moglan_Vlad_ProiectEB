@@ -166,7 +166,7 @@ namespace Moglan_Vlad_ProiectEB.Controllers
         }
 
         // GET: Services/Delete/5
-        // [Authorize(Policy = "Admin")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
             if (id == null)
