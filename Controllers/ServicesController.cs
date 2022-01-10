@@ -59,7 +59,7 @@ namespace Moglan_Vlad_ProiectEB.Controllers
                     services = services.OrderBy(b => b.Title);
                     break;
             }
-            int pageSize = 2;
+            int pageSize = 5;
             return View(await PaginatedList<Service>.CreateAsync(services.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
